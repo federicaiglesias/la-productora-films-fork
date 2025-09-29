@@ -44,7 +44,6 @@ export const CommercialArchiveBlock = async ({
       .filter(Boolean) as Commercial[]
   }
 
-  console.log(commercials)
   return (
     <div className="lg:pt-1 pt-[10px]" id={`block-${id}`}>
       {/*{introContent && (*/}
