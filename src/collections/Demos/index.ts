@@ -19,7 +19,15 @@ export const Demos: CollectionConfig<'commercials'> = {
   defaultPopulate: {
     title: true,
     slug: true,
+    thumbnail: true,
+    description: true,
+    director: true,
+    vimeoUrl: true,
+    youtubeUrl: true,
+    releaseDate: true,
+    client: true,
   },
+
   fields: [
     {
       name: 'title',

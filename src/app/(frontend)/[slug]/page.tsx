@@ -26,7 +26,7 @@ async function fetchPageBySlug(slug: string, draft: boolean, cookie: string | nu
   params.set('where[slug][equals]', slug)
   params.set('limit', '1')
   params.set('pagination', 'false')
-  params.set('depth', '1')
+  params.set('depth', '3')
   if (draft) params.set('draft', 'true')
 
   const res = await fetch(`${base}/api/pages?${params.toString()}`, {

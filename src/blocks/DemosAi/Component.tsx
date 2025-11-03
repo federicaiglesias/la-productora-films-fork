@@ -1,147 +1,126 @@
-// components/blocks/DemosAi.tsx
 'use client'
-import { useMemo, useState } from 'react'
 
-type Demo = {
-  id: string
-  title: string
-  description?: string
-  demoUrl: string
-  image?: { url?: string; alt?: string }
-  category?: string
-  tags?: string[]
-  featured?: boolean
+import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { Demo } from '@/payload-types' // asumiendo que tu colección `demos` genera este tipo
+
+export type DemosProps = {
+  demos: Demo[]
 }
 
-type DemosAiProps = {
-  heading?: string
-  intro?: string
-  layout?: 'grid' | 'list'
-  columns?: number
-  showSearch?: boolean
-  showFilters?: boolean
-  items: Array<{ demo: Demo; highlight?: boolean }>
-}
+export const DemosCollectionArchive: React.FC<DemosProps> = ({ demos }) => {
+  const [selectedDemo, setSelectedDemo] = useState<Demo | null>(null)
 
-export function DemosAiBlock({
-  heading,
-  intro,
-  layout = 'grid',
-  columns = 3,
-  showSearch = false,
-  showFilters = false,
-  items = [],
-}: DemosAiProps) {
-  const demos = useMemo(() => items.map((i) => i.demo).filter(Boolean), [items])
-
-  const [query, setQuery] = useState('')
-  const [category, setCategory] = useState<string | 'all'>('all')
-
-  const categories = useMemo(() => {
-    const set = new Set<string>()
-    demos.forEach((d) => d.category && set.add(d.category))
-    return Array.from(set)
-  }, [demos])
-
-  const filtered = useMemo(() => {
-    return demos.filter((d) => {
-      const q = query.toLowerCase()
-      const matchQuery =
-        !q ||
-        d.title?.toLowerCase().includes(q) ||
-        d.description?.toLowerCase().includes(q) ||
-        d.tags?.some((t) => t.toLowerCase().includes(q))
-      const matchCat = category === 'all' || d.category === category
-      return matchQuery && matchCat
-    })
-  }, [demos, query, category])
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedDemo(null)
+    }
+    if (selectedDemo) window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedDemo])
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-16">
-      {heading && <h2 className="text-3xl font-bold mb-2">{heading}</h2>}
-      {intro && <p className="opacity-80 mb-6">{intro}</p>}
-
-      {(showSearch || showFilters) && (
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          {showSearch && (
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar demos..."
-              className="w-full md:w-1/2 border rounded-xl px-4 py-2"
-            />
-          )}
-          {showFilters && (
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value as any)}
-              className="w-full md:w-1/3 border rounded-xl px-4 py-2"
+    <div>
+      <div className="grid grid-cols-1 gap-px mx-auto w-full">
+        {demos?.map((demo, index) => {
+          const thumbnail = typeof demo.thumbnail === 'object' ? demo.thumbnail : null
+          const src =
+            (thumbnail && (thumbnail.url || thumbnail.thumbnailURL)) || '/path/to/placeholder.png'
+          return (
+            <div
+              key={index}
+              className="relative w-full aspect-[16/9] sm:aspect-[16/5] cursor-pointer overflow-hidden group"
+              onClick={() => setSelectedDemo(demo)}
             >
-              <option value="all">Todas las categorías</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-      )}
-
-      {layout === 'grid' ? (
-        <div
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: `repeat(${Math.max(1, Math.min(4, columns || 3))}, minmax(0, 1fr))`,
-          }}
-        >
-          {filtered.map((d) => (
-            <a
-              key={d.id}
-              href={d.demoUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-2xl border p-4 hover:shadow-md transition"
-            >
-              {d.image?.url && (
-                <img
-                  src={d.image.url}
-                  alt={d.image.alt || d.title}
-                  className="w-full h-44 object-cover rounded-xl mb-3"
+              {thumbnail && (
+                <Image
+                  src={src}
+                  alt={demo.title || 'demo thumbnail'}
+                  fill
+                  className="object-cover"
                 />
               )}
-              <h3 className="font-semibold text-lg">{d.title}</h3>
-              {d.category && <p className="text-sm opacity-70">{d.category}</p>}
-              {d.description && (
-                <p className="text-sm mt-2 opacity-80 line-clamp-3">{d.description}</p>
-              )}
-            </a>
-          ))}
-        </div>
-      ) : (
-        <ul className="space-y-4">
-          {filtered.map((d) => (
-            <li key={d.id} className="rounded-2xl border p-4 hover:shadow-md transition">
-              <a href={d.demoUrl} target="_blank" rel="noreferrer" className="flex gap-4">
-                {d.image?.url && (
-                  <img
-                    src={d.image.url}
-                    alt={d.image.alt || d.title}
-                    className="w-28 h-20 object-cover rounded-lg"
-                  />
-                )}
-                <div>
-                  <h3 className="font-semibold">{d.title}</h3>
-                  {d.category && <p className="text-sm opacity-70">{d.category}</p>}
-                  {d.description && (
-                    <p className="text-sm mt-1 opacity-80 line-clamp-2">{d.description}</p>
+
+              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-center px-4">
+                <div className="text-white flex flex-col items-center w-full">
+                  {demo.director && (
+                    <p className="text-base sm:text-lg md:text-[18px] opacity-90 tracking-wide font-avenir font-[300]">
+                      {demo.director}
+                    </p>
                   )}
+                  <p className="uppercase text-2xl sm:text-4xl md:text-[32px] leading-tight my-2 sm:my-4 font-avenir font-[500]">
+                    {demo.title}
+                  </p>
+                  <p className="text-lg sm:text-2xl md:text-[18px] opacity-90 font-avenir font-[100]">
+                    {demo.client || 'La Productora Films'}
+                  </p>
                 </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Modal (Vimeo/YouTube) */}
+      {selectedDemo && (selectedDemo.vimeoUrl || selectedDemo.youtubeUrl) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/90" onClick={() => setSelectedDemo(null)} />
+          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-xl">
+            {(() => {
+              // Primero Vimeo (igual que commercials)
+              if (selectedDemo.vimeoUrl) {
+                let videoId = String(selectedDemo.vimeoUrl)
+                try {
+                  const url = new URL(selectedDemo.vimeoUrl)
+                  videoId = url.pathname.split('/').filter(Boolean).pop() || videoId
+                } catch {
+                  const parts = selectedDemo.vimeoUrl.split('/')
+                  videoId = parts[parts.length - 1] || ''
+                }
+                return (
+                  <iframe
+                    src={`https://player.vimeo.com/video/${videoId}?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=1`}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                )
+              }
+
+              // Fallback YouTube (por si lo usás en algunos demos)
+              if (selectedDemo.youtubeUrl) {
+                let id = ''
+                try {
+                  const u = new URL(selectedDemo.youtubeUrl)
+                  id = u.hostname.includes('youtu.be')
+                    ? u.pathname.split('/').filter(Boolean).pop() || ''
+                    : u.searchParams.get('v') || ''
+                } catch {
+                  const parts = selectedDemo.youtubeUrl.split('v=')
+                  id = parts[1]?.split('&')[0] || ''
+                }
+                return (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                )
+              }
+
+              return null
+            })()}
+          </div>
+        </div>
       )}
-    </section>
+    </div>
   )
+}
+
+export const DemosAiBlock: React.FC<{ items: Array<{ demo: Demo }> }> = ({ items }) => {
+  const demos = (items || []).map((i) => i.demo).filter(Boolean)
+  return <DemosCollectionArchive demos={demos} />
 }
