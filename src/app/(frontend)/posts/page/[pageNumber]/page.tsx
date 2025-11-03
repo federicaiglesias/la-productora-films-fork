@@ -1,41 +1,49 @@
-import type { Metadata } from 'next/types'
+// src/app/(frontend)/posts/page/[pageNumber]/page.tsx
+export const dynamic = 'force-static'
+export const dynamicParams = false
+export const revalidate = 600
+
+import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import React from 'react'
 
 import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React from 'react'
 import PageClient from './page.client'
-import { notFound } from 'next/navigation'
 
-export const revalidate = 600
-
-type Args = {
+// Mantener consistencia: params como Promise (igual que en otros archivos del segmento)
+type PageProps = {
   params: Promise<{
     pageNumber: string
   }>
 }
 
-export default async function Page({ params: paramsPromise }: Args) {
+export default async function Page({ params: paramsPromise }: PageProps) {
   const { pageNumber } = await paramsPromise
+  const pageNum = Number(pageNumber)
+  if (!Number.isInteger(pageNum) || pageNum < 1) notFound()
+
   const payload = await getPayload({ config: configPromise })
 
-  const sanitizedPageNumber = Number(pageNumber)
-
-  if (!Number.isInteger(sanitizedPageNumber)) notFound()
-
+  const limit = 12
   const posts = await payload.find({
     collection: 'posts',
     depth: 1,
-    limit: 12,
-    page: sanitizedPageNumber,
+    limit,
+    page: pageNum,
     overrideAccess: false,
   })
+
+  // Si piden una página fuera de rango en build/SSG => 404
+  if (pageNum > 1 && pageNum > (posts.totalPages || 1)) notFound()
 
   return (
     <div className="pt-24 pb-24">
       <PageClient />
+
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Posts</h1>
@@ -46,7 +54,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         <PageRange
           collection="posts"
           currentPage={posts.page}
-          limit={12}
+          limit={limit}
           totalDocs={posts.totalDocs}
         />
       </div>
@@ -54,7 +62,7 @@ export default async function Page({ params: paramsPromise }: Args) {
       <CollectionArchive posts={posts.docs} />
 
       <div className="container">
-        {posts?.page && posts?.totalPages > 1 && (
+        {posts.totalPages > 1 && posts.page && (
           <Pagination page={posts.page} totalPages={posts.totalPages} />
         )}
       </div>
@@ -62,27 +70,27 @@ export default async function Page({ params: paramsPromise }: Args) {
   )
 }
 
-export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
+export async function generateMetadata({ params: paramsPromise }: PageProps): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
+  const pageNum = Number(pageNumber)
   return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
+    title: `Posts — Página ${Number.isFinite(pageNum) ? pageNum : 1}`,
   }
 }
 
+// SSG: generamos TODAS las páginas válidas
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
+
+  const limit = 12
   const { totalDocs } = await payload.count({
     collection: 'posts',
     overrideAccess: false,
   })
 
-  const totalPages = Math.ceil(totalDocs / 10)
+  const totalPages = Math.max(1, Math.ceil(totalDocs / limit))
 
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
+  return Array.from({ length: totalPages }, (_, i) => ({
+    pageNumber: String(i + 1),
+  }))
 }

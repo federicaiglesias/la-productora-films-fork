@@ -1,17 +1,51 @@
-build
-dist / media
-node_modules
+# === OS / IDE ===
 .DS_Store
-.env
-.next
-.vercel
-.idea
+Thumbs.db
+.idea/
+.vscode/
 
-# Payload default media upload directory
+# === Node / package managers ===
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# No usamos estos lockfiles (estamos con pnpm)
+package-lock.json
+yarn.lock
+
+# === Next.js ===
+.next/
+.next/cache/
+out/
+
+# === Vercel CLI (link local) ===
+.vercel/
+
+# === Builds genéricos ===
+build/
+dist/
+
+# === Payload CMS ===
+# uploads locales (no versionar)
 public/media/
 
+# === Environment files (secretos) ===
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.development
+
+
+# === Misc estáticos que se regeneran ===
 public/robots.txt
 public/sitemap*.xml
 
-package-lock.json
-yarn.lock
+# === Caches / herramientas ===
+.eslintcache
+.turbo/
+.swc/
+.cache/
