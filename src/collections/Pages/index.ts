@@ -26,6 +26,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { CommercialArchive } from '@/blocks/CommercialArchiveBlock/config'
 import { Expertise } from '@/blocks/Expertise/config'
+import { DemosAi } from '@/blocks/DemosAi/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -93,6 +94,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ContactUs,
                 Expertise,
                 ArtificialIntelligence,
+                DemosAi,
               ],
               required: true,
               admin: {
