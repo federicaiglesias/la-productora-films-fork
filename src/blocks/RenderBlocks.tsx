@@ -13,6 +13,7 @@ import { CommercialArchiveBlock } from '@/blocks/CommercialArchiveBlock/Componen
 import { ContactUsBlock } from '@/blocks/ContactUs/Component'
 import { ExpertiseBlock } from './Expertise/Component'
 import { ArtificialIntelligenceBlock } from './ArtificialIntelligence/Component'
+import { DemosAiBlock } from '@/blocks/DemosAi/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -26,6 +27,7 @@ const blockComponents = {
   contactUs: ContactUsBlock,
   expertise: ExpertiseBlock,
   artificialIntelligence: ArtificialIntelligenceBlock,
+  DemosAi: DemosAiBlock,
 }
 
 export const RenderBlocks: React.FC<{
