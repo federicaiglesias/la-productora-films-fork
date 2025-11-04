@@ -19,6 +19,7 @@ import { getServerSideURL } from './utilities/getURL'
 import { Films } from '@/collections/Films'
 import { Commercials } from '@/collections/Commercials'
 import { Employees } from '@/collections/Employees'
+import { Demos } from '@/collections/Demos'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -68,7 +69,7 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users, Films, Commercials, Employees],
+  collections: [Pages, Posts, Media, Categories, Users, Films, Commercials, Employees, Demos],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, FooterGlobal],
   plugins: [

@@ -75,6 +75,7 @@ export interface Config {
     films: Film;
     commercials: Commercial;
     employees: Employee;
+    demos: Demo;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +95,7 @@ export interface Config {
     films: FilmsSelect<false> | FilmsSelect<true>;
     commercials: CommercialsSelect<false> | CommercialsSelect<true>;
     employees: EmployeesSelect<false> | EmployeesSelect<true>;
+    demos: DemosSelect<false> | DemosSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -373,6 +375,17 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'artificialIntelligence';
+      }
+    | {
+        items?:
+          | {
+              demo: number | Demo;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'DemosAi';
       }
   )[];
   meta?: {
@@ -1069,6 +1082,40 @@ export interface Commercial {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "demos".
+ */
+export interface Demo {
+  id: number;
+  title: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  director?: string | null;
+  vimeoUrl: string;
+  youtubeUrl?: string | null;
+  thumbnail: number | Media;
+  releaseDate: string;
+  client?: string | null;
+  slug?: string | null;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1272,6 +1319,10 @@ export interface PayloadLockedDocument {
         value: number | Employee;
       } | null)
     | ({
+        relationTo: 'demos';
+        value: number | Demo;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1465,6 +1516,18 @@ export interface PagesSelect<T extends boolean = true> {
               leftImage?: T;
               rightImage?: T;
               content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        DemosAi?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    demo?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
@@ -1816,6 +1879,25 @@ export interface EmployeesSelect<T extends boolean = true> {
   role?: T;
   pic?: T;
   email?: T;
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "demos_select".
+ */
+export interface DemosSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  director?: T;
+  vimeoUrl?: T;
+  youtubeUrl?: T;
+  thumbnail?: T;
+  releaseDate?: T;
+  client?: T;
   slug?: T;
   slugLock?: T;
   updatedAt?: T;
@@ -2208,6 +2290,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'employees';
           value: number | Employee;
+        } | null)
+      | ({
+          relationTo: 'demos';
+          value: number | Demo;
         } | null);
     global?: string | null;
     user?: (number | null) | User;

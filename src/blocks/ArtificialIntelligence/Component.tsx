@@ -15,7 +15,6 @@ type AIProps = {
 function urlOf(m?: number | Media | null) {
   return m && typeof m === 'object' ? (m.url ?? undefined) : undefined
 }
-
 export const ArtificialIntelligenceBlock: React.FC<AIProps> = (props) => {
   const topSrc = urlOf(props.topImage) ?? '/images/top.png'
   const leftSrc = urlOf(props.leftImage) ?? '/images/left.png'
