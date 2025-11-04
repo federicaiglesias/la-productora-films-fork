@@ -4,11 +4,14 @@ import { authenticated } from '@/access/authenticated'
 import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { slugField } from '@/fields/slug'
 
-export const Demos: CollectionConfig<'commercials'> = {
+export const Demos: CollectionConfig = {
   slug: 'demos',
   labels: {
     singular: 'Demo',
     plural: 'Demos',
+  },
+  admin: {
+    useAsTitle: 'title', // 👈 esto hace que en el admin se vea el título en lugar del ID
   },
   access: {
     create: authenticated,
