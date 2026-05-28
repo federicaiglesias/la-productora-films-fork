@@ -75,7 +75,7 @@ export const FilmCollectionArchive: React.FC<Props> = ({ films }) => {
       </div>
 
       {/* Modal */}
-      {selectedFilm?.vimeoUrl && (
+      {(selectedFilm?.vimeoUrl || selectedFilm?.youtubeUrl) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/90" onClick={() => setSelectedFilm(null)} />
@@ -84,21 +84,50 @@ export const FilmCollectionArchive: React.FC<Props> = ({ films }) => {
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-xl">
             {/* Extract the ID from any Vimeo URL */}
             {(() => {
-              let videoId = String(selectedFilm.vimeoUrl)
-              try {
-                // new URL(...) handles query strings, trailing slashes, etc.
-                const url = new URL(selectedFilm.vimeoUrl)
-                videoId = url.pathname.split('/').filter(Boolean).pop() || videoId
-              } catch {
-                // fallback if URL parsing fails
-                const parts = selectedFilm.vimeoUrl.split('/')
-                videoId = parts[parts.length - 1] || ''
+              const getVimeoId = (urlValue: string) => {
+                try {
+                  const url = new URL(urlValue)
+                  return url.pathname.split('/').filter(Boolean).pop()
+                } catch {
+                  return urlValue.split('/').pop()
+                }
               }
+
+              const getYoutubeId = (urlValue: string) => {
+                try {
+                  const url = new URL(urlValue)
+
+                  if (url.hostname.includes('youtu.be')) {
+                    return url.pathname.split('/').filter(Boolean)[0]
+                  }
+
+                  if (url.hostname.includes('youtube.com')) {
+                    return url.searchParams.get('v')
+                  }
+
+                  return null
+                } catch {
+                  return null
+                }
+              }
+
+              let iframeSrc = ''
+
+              if (selectedFilm.vimeoUrl) {
+                const videoId = getVimeoId(String(selectedFilm.vimeoUrl))
+
+                iframeSrc = `https://player.vimeo.com/video/${videoId}?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=1`
+              } else if (selectedFilm.youtubeUrl) {
+                const videoId = getYoutubeId(String(selectedFilm.youtubeUrl))
+
+                iframeSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+              }
+
               return (
                 <iframe
-                  src={`https://player.vimeo.com/video/${videoId}?autoplay=1&muted=0&title=0&byline=0&portrait=0&controls=1`}
+                  src={iframeSrc}
                   frameBorder="0"
-                  allow="autoplay; fullscreen"
+                  allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
                   className="w-full h-full"
                 />

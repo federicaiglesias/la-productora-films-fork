@@ -41,7 +41,7 @@ export const Films: CollectionConfig<'films'> = {
     {
       name: 'vimeoUrl',
       type: 'text',
-      required: true,
+      required: false,
     },
     {
       name: 'youtubeUrl',

@@ -1004,7 +1004,7 @@ export interface Film {
     [k: string]: unknown;
   };
   director?: string | null;
-  vimeoUrl: string;
+  vimeoUrl?: string | null;
   youtubeUrl?: string | null;
   thumbnail: number | Media;
   releaseDate: string;
