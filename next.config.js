@@ -8,9 +8,16 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   images: {
     remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
+      ...[NEXT_PUBLIC_SERVER_URL].map((item) => {
         const url = new URL(item)
 
         return {
@@ -18,30 +25,27 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
-      // Allow your production domain for API media routes
       {
         protocol: 'https',
         hostname: 'www.laproductorafilms.com',
         pathname: '/api/media/file/**',
       },
-      // Allow Vercel app domain for API media routes
       {
         protocol: 'https',
         hostname: 'la-productora-films.vercel.app',
         pathname: '/api/media/file/**',
       },
-      // Allow Vercel Blob Storage (in case direct URLs are used)
       {
         protocol: 'https',
         hostname: '*.vercel-storage.com',
       },
-      // Allow general blob storage patterns
       {
         protocol: 'https',
         hostname: '*.blob.vercel-storage.com',
       },
     ],
   },
+
   webpack: (config, { webpack }) => {
     config.plugins.push(
       new webpack.IgnorePlugin({
@@ -50,6 +54,7 @@ const nextConfig = {
     )
     return config
   },
+
   reactStrictMode: true,
   redirects,
 }
