@@ -57,71 +57,68 @@ export const ContactUsBlock: React.FC<Props> = (props) => {
   const leftOrgTitle = props.leftOrgTitle || FALLBACK.leftOrgTitle
   const rightOrgTitle = props.rightOrgTitle || FALLBACK.rightOrgTitle
   const leftGroups = (props.leftGroups?.length ? props.leftGroups : FALLBACK.leftGroups) as Group[]
-  const rightGroups = (props.rightGroups?.length ? props.rightGroups : FALLBACK.rightGroups) as Group[]
+  const rightGroups = (
+    props.rightGroups?.length ? props.rightGroups : FALLBACK.rightGroups
+  ) as Group[]
 
   return (
-    <section className="bg-black text-white py-16">
-      <div className="max-w-full mx-auto px-6 md:px-8 md:pt-16 font-avenir">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-16">
-          {/* Columna izquierda (2/3 en desktop) */}
-          <div className="lg:col-span-2 md:border-l border-[#8F8F8F] md:pl-8 border-t md:border-t-0 pt-8 md:pt-0">
-            <h3 className="text-lg md:text-[16px] font-semibold tracking-wide mb-8">
-              {leftOrgTitle}
-            </h3>
+    <section className="bg-black text-white px-8 md:px-12 lg:px-16 pt-20 pb-4 flex flex-col">
+      <div className="">
+        <div className="border-l border-[#8F8F8F] pl-6 md:pl-8">
+          <h2 className="text-[16px] font-semibold tracking-wide mb-12">OUR TEAM</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 lg:mr-48">
-              {leftGroups.map((g, i) => (
-                <div key={`left-g-${i}`}>
-                  {g.heading && (
-                    <h4 className="text-[16px] font-medium mb-6 text-gray-300">{g.heading}</h4>
-                  )}
-
-                  <div className="space-y-4">
-                    {(g.people ?? []).map((p, j) => {
-                      const { name, email } = resolvePerson(p)
-                      if (!name && !email) return null
-                      return (
-                        <div key={`left-g-${i}-p-${j}`}>
-                          {name && <p className="font-medium">{name}</p>}
-                          {email && (
-                            <a
-                              href={`mailto:${email}`}
-                              className="text-gray-400 text-sm hover:underline hover:text-gray transition"
-                            >
-                              {email}
-                            </a>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Columna derecha */}
-          <div className="md:border-l border-[#8F8F8F] md:pl-8 border-t md:border-t-0 pt-8 md:pt-0">
-            <h3 className="text-lg md:text-[16px] font-semibold tracking-wide mb-8">
-              {rightOrgTitle}
-            </h3>
-
-            {(rightGroups ?? []).map((g, i) => (
-              <div key={`right-g-${i}`} className="mb-8 last:mb-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 lg:gap-24">
+            {leftGroups.map((g, i) => (
+              <div key={`left-g-${i}`}>
                 {g.heading && (
-                  <h4 className="text-[16px] font-medium mb-6 text-gray-300">{g.heading}</h4>
+                  <h3 className="text-[16px] font-medium text-gray-300 mb-6">{g.heading}</h3>
                 )}
-                <div className="space-y-4">
+
+                <div className="space-y-5">
                   {(g.people ?? []).map((p, j) => {
                     const { name, email } = resolvePerson(p)
+
                     if (!name && !email) return null
+
                     return (
-                      <div key={`right-g-${i}-p-${j}`}>
-                        {name && <p className="font-medium">{name}</p>}
+                      <div key={`left-g-${i}-p-${j}`}>
+                        {name && <p className="text-[16px] font-medium leading-tight">{name}</p>}
+
                         {email && (
                           <a
                             href={`mailto:${email}`}
-                            className="text-gray-400 text-sm hover:underline hover:text-gray transition"
+                            className="text-[14px] text-gray-400 hover:text-white transition-colors"
+                          >
+                            {email}
+                          </a>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+
+            {rightGroups.map((g, i) => (
+              <div key={`right-g-${i}`}>
+                {g.heading && (
+                  <h3 className="text-[16px] font-medium text-gray-300 mb-6">{g.heading}</h3>
+                )}
+
+                <div className="space-y-5">
+                  {(g.people ?? []).map((p, j) => {
+                    const { name, email } = resolvePerson(p)
+
+                    if (!name && !email) return null
+
+                    return (
+                      <div key={`right-g-${i}-p-${j}`}>
+                        {name && <p className="text-[16px] font-medium leading-tight">{name}</p>}
+
+                        {email && (
+                          <a
+                            href={`mailto:${email}`}
+                            className="text-[14px] text-gray-400 hover:text-white transition-colors"
                           >
                             {email}
                           </a>

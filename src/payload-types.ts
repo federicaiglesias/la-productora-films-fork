@@ -246,23 +246,8 @@ export interface Page {
     | FilmArchiveBlock
     | CommercialArchiveBlock
     | {
-        leftOrgTitle?: string | null;
-        leftGroups?:
-          | {
-              heading: string;
-              people?:
-                | {
-                    employee?: (number | null) | Employee;
-                    name?: string | null;
-                    email?: string | null;
-                    id?: string | null;
-                  }[]
-                | null;
-              id?: string | null;
-            }[]
-          | null;
-        rightOrgTitle?: string | null;
-        rightGroups?:
+        title: string;
+        sections?:
           | {
               heading: string;
               people?:
@@ -1441,23 +1426,8 @@ export interface PagesSelect<T extends boolean = true> {
         contactUs?:
           | T
           | {
-              leftOrgTitle?: T;
-              leftGroups?:
-                | T
-                | {
-                    heading?: T;
-                    people?:
-                      | T
-                      | {
-                          employee?: T;
-                          name?: T;
-                          email?: T;
-                          id?: T;
-                        };
-                    id?: T;
-                  };
-              rightOrgTitle?: T;
-              rightGroups?:
+              title?: T;
+              sections?:
                 | T
                 | {
                     heading?: T;
