@@ -2,58 +2,45 @@ import type { Block } from 'payload'
 
 export const ContactUs: Block = {
   slug: 'contactUs',
-  labels: { singular: 'Contact Us', plural: 'Contact Us' },
+
+  labels: {
+    singular: 'Our Team',
+    plural: 'Our Team',
+  },
+
   fields: [
     {
-      name: 'leftOrgTitle',
+      name: 'title',
       type: 'text',
-      label: 'Título columna izquierda',
-      defaultValue: 'LA PRODUCTORA FILMS',
+      label: 'Título',
+      defaultValue: 'OUR TEAM',
+      required: true,
     },
     {
-      name: 'leftGroups',
+      name: 'sections',
       type: 'array',
-      label: 'Grupos (columna izquierda)',
-      labels: { singular: 'Grupo', plural: 'Grupos' },
+      label: 'Secciones',
+      labels: {
+        singular: 'Sección',
+        plural: 'Secciones',
+      },
+      minRows: 1,
+      maxRows: 3,
       fields: [
-        { name: 'heading', type: 'text', label: 'Subtítulo', required: true },
         {
-          name: 'people',
-          type: 'array',
-          label: 'Personas',
-          labels: { singular: 'Persona', plural: 'Personas' },
-          fields: [
-            {
-              name: 'employee',
-              type: 'relationship',
-              relationTo: 'employees',
-              label: 'Empleado (opcional)',
-            },
-            { name: 'name', type: 'text', label: 'Nombre' },
-            { name: 'email', type: 'email', label: 'Email' },
-          ],
+          name: 'heading',
+          type: 'text',
+          label: 'Título de la sección',
+          required: true,
         },
-      ],
-    },
-
-    {
-      name: 'rightOrgTitle',
-      type: 'text',
-      label: 'Título columna derecha',
-      defaultValue: 'LA PRODUCTORA IA',
-    },
-    {
-      name: 'rightGroups',
-      type: 'array',
-      label: 'Grupos (columna derecha)',
-      labels: { singular: 'Grupo', plural: 'Grupos' },
-      fields: [
-        { name: 'heading', type: 'text', label: 'Subtítulo', required: true },
         {
           name: 'people',
           type: 'array',
           label: 'Personas',
-          labels: { singular: 'Persona', plural: 'Personas' },
+          labels: {
+            singular: 'Persona',
+            plural: 'Personas',
+          },
           fields: [
             {
               name: 'employee',
@@ -61,8 +48,16 @@ export const ContactUs: Block = {
               relationTo: 'employees',
               label: 'Empleado (opcional)',
             },
-            { name: 'name', type: 'text', label: 'Nombre' },
-            { name: 'email', type: 'email', label: 'Email' },
+            {
+              name: 'name',
+              type: 'text',
+              label: 'Nombre manual',
+            },
+            {
+              name: 'email',
+              type: 'email',
+              label: 'Email manual',
+            },
           ],
         },
       ],
