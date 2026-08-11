@@ -11,7 +11,7 @@ export const Demos: CollectionConfig = {
     plural: 'Demos',
   },
   admin: {
-    useAsTitle: 'title', // 👈 esto hace que en el admin se vea el título en lugar del ID
+    useAsTitle: 'title', 
   },
   access: {
     create: authenticated,
