@@ -199,4 +199,4 @@ export const ExpertiseBlock: React.FC<Props> = ({ top, middle, bottom }) => {
   )
 }
 
-export default ExpertiseBlock
+export default ExpertiseBlock;
