@@ -128,7 +128,7 @@ export const ExpertiseBlock: React.FC<Props> = ({ top, middle, bottom }) => {
             <div className="border-t border-white w-full mb-6 lg:mb-8" />
             <div className="mb-6 lg:mb-8">
               {topBody ? (
-                <RichText data={topBody} />
+                <RichText data={topBody} enableGutter={false}/>
               ) : (
                 <div className="prose prose-invert max-w-none">{Fallback.topText}</div>
               )}
@@ -166,7 +166,7 @@ export const ExpertiseBlock: React.FC<Props> = ({ top, middle, bottom }) => {
             <div className="border-t border-white w-full mb-6 lg:mb-8" />
             <div className="lg:mb-20">
               {middleBody ? (
-                <RichText data={middleBody} />
+                <RichText data={middleBody} enableGutter={false} />
               ) : (
                 <div className="prose prose-invert max-w-none space-y-4">{Fallback.middleText}</div>
               )}
@@ -187,7 +187,7 @@ export const ExpertiseBlock: React.FC<Props> = ({ top, middle, bottom }) => {
             <div className="border-t border-white w-full mb-6 lg:mb-8" />
             <div className="lg:mb-20">
               {bottomBody ? (
-                <RichText data={bottomBody} />
+                <RichText data={bottomBody} enableGutter={false} />
               ) : (
                 <div className="prose prose-invert max-w-none space-y-4">{Fallback.bottomText}</div>
               )}
